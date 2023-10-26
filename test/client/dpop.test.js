@@ -47,59 +47,6 @@ describe('DPoP', () => {
       });
     });
 
-    if (jose.cryptoRuntime === 'node:crypto') {
-      it('DPoP Private Key can be passed also as valid createPrivateKey input', async function () {
-        if (parseInt(process.versions.node, 10) >= 16) {
-          const jwk = await jose.exportJWK(
-            (
-              await jose.generateKeyPair('ES256', { extractable: true })
-            ).privateKey,
-          );
-          await this.client.dpopProof({}, { format: 'jwk', key: jwk });
-        }
-
-        {
-          const pem = await jose.exportPKCS8(
-            (
-              await jose.generateKeyPair('ES256', { extractable: true })
-            ).privateKey,
-          );
-          await this.client.dpopProof({}, pem);
-          await this.client.dpopProof({}, { key: pem, format: 'pem' });
-        }
-
-        {
-          const der = (
-            await jose.generateKeyPair('ES256', { extractable: true })
-          ).privateKey.export({
-            format: 'der',
-            type: 'pkcs8',
-          });
-          await this.client.dpopProof({}, { key: der, format: 'der', type: 'pkcs8' });
-        }
-
-        {
-          const der = (
-            await jose.generateKeyPair('ES256', { extractable: true })
-          ).privateKey.export({
-            format: 'der',
-            type: 'sec1',
-          });
-          await this.client.dpopProof({}, { key: der, format: 'der', type: 'sec1' });
-        }
-
-        {
-          const der = (
-            await jose.generateKeyPair('RS256', { extractable: true })
-          ).privateKey.export({
-            format: 'der',
-            type: 'pkcs1',
-          });
-          await this.client.dpopProof({}, { key: der, format: 'der', type: 'pkcs1' });
-        }
-      });
-    }
-
     it('DPoP Proof JWT w/o ath', async function () {
       const proof = await this.client.dpopProof(
         {

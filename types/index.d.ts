@@ -31,7 +31,6 @@ export type CustomHttpOptionsProvider = (
   options: Omit<https.RequestOptions, keyof URL>,
 ) => HttpOptions;
 export type TokenTypeHint = 'access_token' | 'refresh_token' | string;
-export type DPoPInput = crypto.KeyObject | Parameters<typeof crypto.createPrivateKey>[0];
 
 interface UnknownObject {
   [key: string]: unknown;
@@ -173,13 +172,13 @@ export interface OpenIDCallbackChecks extends OAuthCallbackChecks {
 export interface CallbackExtras {
   exchangeBody?: object;
   clientAssertionPayload?: object;
-  DPoP?: DPoPInput;
+  DPoP?: crypto.KeyObject;
 }
 
 export interface RefreshExtras {
   exchangeBody?: object;
   clientAssertionPayload?: object;
-  DPoP?: DPoPInput;
+  DPoP?: crypto.KeyObject;
 }
 
 export interface GrantBody {
@@ -190,7 +189,7 @@ export interface GrantBody {
 
 export interface GrantExtras {
   clientAssertionPayload?: object;
-  DPoP?: DPoPInput;
+  DPoP?: crypto.KeyObject;
 }
 
 export interface IntrospectExtras {
@@ -229,7 +228,7 @@ export interface DeviceAuthorizationParameters {
 export interface DeviceAuthorizationExtras {
   exchangeBody?: object;
   clientAssertionPayload?: object;
-  DPoP?: DPoPInput;
+  DPoP?: crypto.KeyObject;
 }
 
 export interface PushedAuthorizationRequestExtras {
@@ -337,7 +336,7 @@ declare class BaseClient {
       via?: 'header' | 'body';
       tokenType?: string;
       params?: object;
-      DPoP?: DPoPInput;
+      DPoP?: crypto.KeyObject;
     },
   ): Promise<UserinfoResponse<TUserInfo, TAddress>>;
   requestResource(
@@ -348,7 +347,7 @@ declare class BaseClient {
       body?: string | Buffer;
       method?: 'GET' | 'POST' | 'PUT' | 'HEAD' | 'DELETE' | 'OPTIONS' | 'TRACE' | 'PATCH';
       tokenType?: string;
-      DPoP?: DPoPInput;
+      DPoP?: crypto.KeyObject;
     },
   ): Promise<{ body?: Buffer } & http.IncomingMessage>;
   grant(body: GrantBody, extras?: GrantExtras): Promise<TokenSet>;
