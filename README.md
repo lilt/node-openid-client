@@ -24,8 +24,6 @@ openid-client.
     - private_key_jwt
   - Consuming Self-Issued OpenID Provider ID Token response
 - [OpenID Connect Discovery 1.0][feature-discovery]
-  - Discovery of OpenID Provider (Issuer) Metadata
-  - Discovery of OpenID Provider (Issuer) Metadata via user provided inputs (via [webfinger][documentation-webfinger])
 - [OpenID Connect Dynamic Client Registration 1.0][feature-registration]
   - Dynamic Client Registration request
   - Client initialization via registration client uri
@@ -300,6 +298,5 @@ See [Customizing (docs)][documentation-customizing].
 [documentation-errors]: https://github.com/panva/node-openid-client/blob/main/docs/README.md#errors
 [documentation-generators]: https://github.com/panva/node-openid-client/blob/main/docs/README.md#generators
 [documentation-methods]: https://github.com/panva/node-openid-client/blob/main/docs/README.md#client-authentication-methods
-[documentation-webfinger]: https://github.com/panva/node-openid-client/blob/main/docs/README.md#issuerwebfingerinput
 [express-openid-connect]: https://www.npmjs.com/package/express-openid-connect
 [oauth4webapi]: https://github.com/panva/oauth4webapi#readme

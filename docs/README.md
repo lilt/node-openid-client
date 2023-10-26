@@ -32,7 +32,6 @@ If you or your business use openid-client, please consider becoming a [sponsor][
   - [issuer.FAPI1Client](#issuerfapi1client)
   - [issuer.metadata](#issuermetadata)
 - [Issuer.discover(issuer)](#issuerdiscoverissuer)
-- [Issuer.webfinger(input)](#issuerwebfingerinput)
 <!-- TOC Issuer END -->
 
 ---
@@ -119,15 +118,6 @@ openid-configuration and oauth-authorization-server requests.
 **This is the recommended method of getting yourself an Issuer instance.**
 
 - `issuer`: `<string>` Issuer Identifier or metadata URL
-- Returns: `Promise<Issuer>`
-
----
-
-#### `Issuer.webfinger(input)`
-
-Performs [OpenID Provider Issuer Discovery][webfinger-discovery] based on End-User input.
-
-- `input`: `<string>` EMAIL, URL, Hostname and Port, acct or syntax input
 - Returns: `Promise<Issuer>`
 
 ---
@@ -590,9 +580,7 @@ This is meant to change global request options such as `timeout` or the default 
 
 You change options on a per-request basis by assigning a function to
 
-- `Issuer` constructor to override the following request's options
-  - discovery
-  - webfinger
+- `Issuer` constructor to override the discovery request's options
 - `Issuer` instance to override fetching issuer's jwks_uri
 - `issuer.Client` constructor to override the following request's options
   - dynamic client registration through Client Registration Endpoint
@@ -990,7 +978,6 @@ request instance.
 [sponsor-auth0]: https://a0.to/try-auth0
 [support-sponsor]: https://github.com/sponsors/panva
 [jose]: https://github.com/panva/jose
-[webfinger-discovery]: https://openid.net/specs/openid-connect-discovery-1_0.html#IssuerDiscovery
 [got-library]: https://github.com/sindresorhus/got/tree/v11.8.0
 [client-authentication]: https://openid.net/specs/openid-connect-core-1_0.html#ClientAuthentication
 [Financial-grade API Security Profile 1.0 - Part 2: Advanced]: https://openid.net/specs/openid-financial-api-part-2-1_0.html
