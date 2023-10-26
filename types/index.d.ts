@@ -373,12 +373,6 @@ declare class BaseClient {
     [key: string]: unknown;
   }>;
   static register(metadata: object, other?: RegisterOther & ClientOptions): Promise<BaseClient>;
-  static fromUri(
-    registrationClientUri: string,
-    registrationAccessToken: string,
-    jwks?: { keys: jose.JWK[] },
-    clientOptions?: ClientOptions,
-  ): Promise<BaseClient>;
   static [custom.http_options]: CustomHttpOptionsProvider;
 
   [key: string]: unknown;

@@ -142,7 +142,6 @@ openid-configuration and oauth-authorization-server requests.
   - [client.userinfo(accessToken[, options])](#clientuserinfoaccesstoken-options)
   - [client.pushedAuthorizationRequest(parameters[, extras])](#clientpushedauthorizationrequestparameters-extras)
 - [Client Authentication Methods](#client-authentication-methods)
-- [Client.fromUri(registrationClientUri, registrationAccessToken[, jwks[, clientOptions]])](#clientfromuriregistrationclienturi-registrationaccesstoken-jwks-clientoptions)
 - [Client.register(metadata[, other])](#clientregistermetadata-other)
 <!-- TOC Client END -->
 
@@ -521,21 +520,6 @@ Performs Dynamic Client Registration with the provided metadata at the issuer's
     public parts will be registered as `jwks`.
   - `initialAccessToken`: `<string>` Initial Access Token to use as a Bearer token during the
     registration call.
-  - `additionalAuthorizedParties`: `<string>` &vert; `string[]` additional accepted values for the
-    Authorized Party (`azp`) claim. **Default:** only the client's client_id value is accepted.
-
----
-
-#### `Client.fromUri(registrationClientUri, registrationAccessToken[, jwks[, clientOptions]])`
-
-Performs Dynamic Client Read Request to retrieve a Client instance.
-
-- `registrationClientUri`: `<string>` Location of the Client Configuration Endpoint
-- `registrationAccessToken`: `<string>` Registration Access Token to use as a Bearer token during
-  the Client Read Request
-- `jwks`: `<Object>` JWK Set formatted object with private keys used for signing client assertions
-  or decrypting responses.
-- `clientOptions`: `<Object>` additional options passed to the `Client` constructor
   - `additionalAuthorizedParties`: `<string>` &vert; `string[]` additional accepted values for the
     Authorized Party (`azp`) claim. **Default:** only the client's client_id value is accepted.
 

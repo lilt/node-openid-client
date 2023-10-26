@@ -16,7 +16,7 @@ Issuer and Client configuration: (inline or gist) - Don't forget to redact your 
 {
   // ...
 }
-// Client configuration (client.metadata) and how it is constructed (fromUri or manual?)
+// Client configuration (client.metadata)
 {
   // ...
 }
