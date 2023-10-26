@@ -1,7 +1,7 @@
-const url = require('url');
-const { isNumber, isUndefined } = require('util');
-const querystring = require('querystring');
-const stdhttp = require('http');
+const url = require('node:url');
+const { isNumber, isUndefined } = require('node:util');
+const querystring = require('node:querystring');
+const stdhttp = require('node:http');
 
 const MockRequest = require('readable-mock-req');
 const { expect } = require('chai');

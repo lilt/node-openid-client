@@ -1,4 +1,4 @@
-const { isUndefined } = require('util');
+const { isUndefined } = require('node:util');
 
 const { expect } = require('chai');
 const nock = require('nock');

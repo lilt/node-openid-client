@@ -31,11 +31,8 @@
   "author": "Filip Skokan <panva.ip@gmail.com>",
   "exports": {
     "types": "./types/index.d.ts",
-    "import": "./lib/index.mjs",
-    "require": "./lib/index.js"
+    "node": "./lib/index.js"
   },
-  "main": "./lib/index.js",
-  "types": "./types/index.d.ts",
   "files": [
     "lib",
     "types/index.d.ts"
@@ -45,7 +42,7 @@
     "test": "mocha test/**/*.test.js"
   },
   "dependencies": {
-    "jose": "^4.15.4",
+    "jose": "^5.0.1",
     "lru-cache": "^6.0.0",
     "object-hash": "^2.2.0",
     "oidc-token-hash": "^5.0.3"

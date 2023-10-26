@@ -1,6 +1,5 @@
 const jose = require('jose');
-const crypto = require('crypto');
-const base64url = require('../lib/helpers/base64url');
+const crypto = require('node:crypto');
 
 module.exports = class KeyStore {
   constructor({ keys } = {}) {
@@ -37,7 +36,7 @@ module.exports = class KeyStore {
             kty: 'oct',
             use: use,
             alg,
-            k: base64url.encode(secret),
+            k: jose.base64url.encode(secret),
           };
           jwk.kid = kid || (await jose.calculateJwkThumbprint(jwk));
           this.keys.push(jwk);
