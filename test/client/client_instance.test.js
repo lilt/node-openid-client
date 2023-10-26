@@ -2244,7 +2244,7 @@ describe('Client', () => {
       });
 
       it('has a predefined payload properties', function () {
-        const payload = JSON.parse(base64url.decode(this.auth.form.client_assertion.split('.')[1]));
+        const payload = jose.decodeJwt(this.auth.form.client_assertion);
         expect(payload).to.have.keys(['iat', 'exp', 'jti', 'iss', 'sub', 'aud']);
 
         expect(payload.iss).to.equal(payload.sub).to.equal('identifier');
@@ -2256,9 +2256,7 @@ describe('Client', () => {
       });
 
       it('can use clientAssertionPayload to change the default payload properties', function () {
-        const payload = JSON.parse(
-          base64url.decode(this.authWithClientAssertionPayload.form.client_assertion.split('.')[1]),
-        );
+        const payload = jose.decodeJwt(this.authWithClientAssertionPayload.form.client_assertion);
         expect(payload).to.have.keys(['iat', 'exp', 'jti', 'iss', 'sub', 'aud']);
 
         expect(payload.iss).to.equal(payload.sub).to.equal('identifier');
@@ -2269,7 +2267,7 @@ describe('Client', () => {
       });
 
       it('has the right header properties', function () {
-        const header = JSON.parse(base64url.decode(this.auth.form.client_assertion.split('.')[0]));
+        const header = jose.decodeProtectedHeader(this.auth.form.client_assertion);
         expect(header).to.have.keys(['alg']);
 
         expect(header.alg).to.equal('HS256');
@@ -3820,12 +3818,12 @@ describe('Client', () => {
       });
 
       return client.requestObject({ state: 'foobar' }).then((signed) => {
-        const parts = signed.split('.');
-        expect(JSON.parse(base64url.decode(parts[0]))).to.eql({
+        const { 2: signature } = signed.split('.');
+        expect(jose.decodeProtectedHeader(signed)).to.eql({
           alg: 'none',
           typ: 'oauth-authz-req+jwt',
         });
-        const { jti, iat, exp, ...jwt } = JSON.parse(base64url.decode(parts[1]));
+        const { jti, iat, exp, ...jwt } = jose.decodeJwt(signed);
         expect(jwt).to.eql({
           iss: 'identifier',
           client_id: 'identifier',
@@ -3836,7 +3834,7 @@ describe('Client', () => {
         expect(iat).to.be.a('number');
         expect(exp).to.be.a('number');
         expect(iat + 300).to.eql(exp);
-        expect(parts[2]).to.equal('');
+        expect(signature).to.equal('');
       });
     });
 
@@ -3848,12 +3846,12 @@ describe('Client', () => {
       });
 
       return client.requestObject({ state: 'foobar' }).then((signed) => {
-        const parts = signed.split('.');
-        expect(JSON.parse(base64url.decode(parts[0]))).to.eql({
+        const { 2: signature } = signed.split('.');
+        expect(jose.decodeProtectedHeader(signed)).to.eql({
           alg: 'HS256',
           typ: 'oauth-authz-req+jwt',
         });
-        const { jti, iat, exp, ...jwt } = JSON.parse(base64url.decode(parts[1]));
+        const { jti, iat, exp, ...jwt } = jose.decodeJwt(signed);
         expect(jwt).to.eql({
           iss: 'identifier',
           client_id: 'identifier',
@@ -3864,7 +3862,7 @@ describe('Client', () => {
         expect(iat).to.be.a('number');
         expect(exp).to.be.a('number');
         expect(iat + 300).to.eql(exp);
-        expect(parts[2].length).to.be.ok;
+        expect(signature.length).to.be.ok;
       });
     });
 
@@ -3875,11 +3873,11 @@ describe('Client', () => {
       );
 
       return client.requestObject({ state: 'foobar' }).then((signed) => {
-        const parts = signed.split('.');
-        expect(JSON.parse(base64url.decode(parts[0])))
+        const { 2: signature } = signed.split('.');
+        expect(jose.decodeProtectedHeader(signed))
           .to.contain({ alg: 'RS256', typ: 'oauth-authz-req+jwt' })
           .and.have.property('kid');
-        const { jti, iat, exp, ...jwt } = JSON.parse(base64url.decode(parts[1]));
+        const { jti, iat, exp, ...jwt } = jose.decodeJwt(signed);
         expect(jwt).to.eql({
           iss: 'identifier',
           client_id: 'identifier',
@@ -3890,7 +3888,7 @@ describe('Client', () => {
         expect(iat).to.be.a('number');
         expect(exp).to.be.a('number');
         expect(iat + 300).to.eql(exp);
-        expect(parts[2].length).to.be.ok;
+        expect(signature.length).to.be.ok;
       });
     });
 
@@ -3902,8 +3900,7 @@ describe('Client', () => {
       });
 
       return client.requestObject({ state: 'foobar' }).then((encrypted) => {
-        const parts = encrypted.split('.');
-        expect(JSON.parse(base64url.decode(parts[0])))
+        expect(jose.decodeProtectedHeader(encrypted))
           .to.contain({ alg: 'RSA1_5', enc: 'A128CBC-HS256', cty: 'oauth-authz-req+jwt' })
           .and.have.property('kid');
       });
@@ -3916,8 +3913,7 @@ describe('Client', () => {
       });
 
       return client.requestObject({ state: 'foobar' }).then((encrypted) => {
-        const parts = encrypted.split('.');
-        expect(JSON.parse(base64url.decode(parts[0])))
+        expect(jose.decodeProtectedHeader(encrypted))
           .to.contain({ alg: 'RSA1_5', enc: 'A128CBC-HS256', cty: 'oauth-authz-req+jwt' })
           .and.have.property('kid');
       });
@@ -3931,8 +3927,7 @@ describe('Client', () => {
       });
 
       return client.requestObject({ state: 'foobar' }).then((encrypted) => {
-        const parts = encrypted.split('.');
-        expect(JSON.parse(base64url.decode(parts[0])))
+        expect(jose.decodeProtectedHeader(encrypted))
           .to.contain({ alg: 'A128GCMKW', enc: 'A128CBC-HS256', cty: 'oauth-authz-req+jwt' })
           .and.not.have.property('kid');
       });
@@ -3947,8 +3942,7 @@ describe('Client', () => {
       });
 
       return client.requestObject({ state: 'foobar' }).then((encrypted) => {
-        const parts = encrypted.split('.');
-        expect(JSON.parse(base64url.decode(parts[0])))
+        expect(jose.decodeProtectedHeader(encrypted))
           .to.contain({ alg: 'dir', enc: 'A128CBC-HS256', cty: 'oauth-authz-req+jwt' })
           .and.not.have.property('kid');
       });
@@ -3963,8 +3957,7 @@ describe('Client', () => {
       });
 
       return client.requestObject({ state: 'foobar' }).then((encrypted) => {
-        const parts = encrypted.split('.');
-        expect(JSON.parse(base64url.decode(parts[0])))
+        expect(jose.decodeProtectedHeader(encrypted))
           .to.contain({ alg: 'dir', enc: 'A192CBC-HS384', cty: 'oauth-authz-req+jwt' })
           .and.not.have.property('kid');
       });
@@ -3979,8 +3972,7 @@ describe('Client', () => {
       });
 
       return client.requestObject({ state: 'foobar' }).then((encrypted) => {
-        const parts = encrypted.split('.');
-        expect(JSON.parse(base64url.decode(parts[0])))
+        expect(jose.decodeProtectedHeader(encrypted))
           .to.contain({ alg: 'dir', enc: 'A256CBC-HS512', cty: 'oauth-authz-req+jwt' })
           .and.not.have.property('kid');
       });
@@ -3994,8 +3986,7 @@ describe('Client', () => {
       });
 
       return client.requestObject({ state: 'foobar' }).then((encrypted) => {
-        const parts = encrypted.split('.');
-        expect(JSON.parse(base64url.decode(parts[0])))
+        expect(jose.decodeProtectedHeader(encrypted))
           .to.contain({ alg: 'dir', enc: 'A128CBC-HS256', cty: 'oauth-authz-req+jwt' })
           .and.not.have.property('kid');
       });
@@ -4010,8 +4001,7 @@ describe('Client', () => {
         });
 
         return client.requestObject({ state: 'foobar' }).then((encrypted) => {
-          const parts = encrypted.split('.');
-          expect(JSON.parse(base64url.decode(parts[0])))
+          expect(jose.decodeProtectedHeader(encrypted))
             .to.contain({
               alg: 'PBES2-HS256+A128KW',
               enc: 'A128CBC-HS256',
@@ -4029,8 +4019,7 @@ describe('Client', () => {
         });
 
         return client.requestObject({ state: 'foobar' }).then((encrypted) => {
-          const parts = encrypted.split('.');
-          expect(JSON.parse(base64url.decode(parts[0])))
+          expect(jose.decodeProtectedHeader(encrypted))
             .to.contain({ alg: 'A128KW', enc: 'A128CBC-HS256', cty: 'oauth-authz-req+jwt' })
             .and.not.have.property('kid');
         });
@@ -4101,8 +4090,7 @@ describe('Client', () => {
       });
 
       return client.requestObject({ state: 'foobar' }).then((encrypted) => {
-        const parts = encrypted.split('.');
-        expect(JSON.parse(base64url.decode(parts[0])))
+        expect(jose.decodeProtectedHeader(encrypted))
           .to.contain({ alg: 'RSA1_5', enc: 'A128CBC-HS256', cty: 'oauth-authz-req+jwt' })
           .and.have.property('kid');
       });
@@ -4115,8 +4103,7 @@ describe('Client', () => {
       });
 
       return client.requestObject({ state: 'foobar' }).then((encrypted) => {
-        const parts = encrypted.split('.');
-        expect(JSON.parse(base64url.decode(parts[0])))
+        expect(jose.decodeProtectedHeader(encrypted))
           .to.contain({ alg: 'RSA1_5', enc: 'A128CBC-HS256', cty: 'oauth-authz-req+jwt' })
           .and.have.property('kid');
       });
