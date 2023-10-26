@@ -193,7 +193,7 @@ describe('OpenIDConnectStrategy', () => {
       expect(strategy.redirect.calledOnce).to.be.true;
       const target = strategy.redirect.firstCall.args[0];
       expect(target).to.include(`redirect_uri=${encodeURIComponent('https://example.com/cb')}`);
-      expect(target).to.include('scope=openid%20profile');
+      expect(target).to.include('scope=openid+profile');
     });
 
     it('can have authorization parameters specified at runtime', function () {
