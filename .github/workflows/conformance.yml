@@ -36,9 +36,6 @@ jobs:
           # OIDC HYBRID
           - plan: oidcc-client-hybrid-certification-test-plan
 
-          # OIDC CONFIG
-          - plan: oidcc-client-config-certification-test-plan
-
           # OIDC DYNAMIC
           # TODO: work around the request_uri lodging service EOL
           # - plan: oidcc-client-dynamic-certification-test-plan
@@ -49,7 +46,7 @@ jobs:
           - plan: fapi-rw-id2-client-test-plan
             client_auth_type: private_key_jwt
 
-          # FAPI 1.0 Advanced Final
+          # FAPI 1.0 Advanced Final w/ OIDC
           - plan: fapi1-advanced-final-client-test-plan
             client_auth_type: private_key_jwt
           - plan: fapi1-advanced-final-client-test-plan
@@ -74,23 +71,89 @@ jobs:
             client_auth_type: private_key_jwt
             fapi_auth_request_method: pushed
             fapi_response_mode: jarm
+
+          # FAPI 1.0 Advanced Final w/o OIDC
           - plan: fapi1-advanced-final-client-test-plan
             client_auth_type: mtls
-            fapi_auth_request_method: pushed
-            fapi_response_mode: jarm
-            fapi_client_type: plain_oauth
-          - plan: fapi1-advanced-final-client-test-plan
-            client_auth_type: mtls
-            fapi_response_mode: jarm
-            fapi_client_type: plain_oauth
-          - plan: fapi1-advanced-final-client-test-plan
-            client_auth_type: private_key_jwt
             fapi_auth_request_method: pushed
             fapi_response_mode: jarm
             fapi_client_type: plain_oauth
           - plan: fapi1-advanced-final-client-test-plan
+            client_auth_type: mtls
+            fapi_response_mode: jarm
+            fapi_client_type: plain_oauth
+          - plan: fapi1-advanced-final-client-test-plan
+            client_auth_type: private_key_jwt
+            fapi_auth_request_method: pushed
+            fapi_response_mode: jarm
+            fapi_client_type: plain_oauth
+          - plan: fapi1-advanced-final-client-test-plan
             client_auth_type: private_key_jwt
             fapi_response_mode: jarm
+            fapi_client_type: plain_oauth
+
+          # FAPI 2.0 Security Profile ID2 w/ OIDC
+          - plan: fapi2-security-profile-id2-client-test-plan
+            client_auth_type: private_key_jwt
+            sender_constrain: dpop
+          - plan: fapi2-security-profile-id2-client-test-plan
+            client_auth_type: mtls
+            sender_constrain: dpop
+          - plan: fapi2-security-profile-id2-client-test-plan
+            client_auth_type: mtls
+            sender_constrain: mtls
+          - plan: fapi2-security-profile-id2-client-test-plan
+            client_auth_type: private_key_jwt
+            sender_constrain: mtls
+
+          # FAPI 2.0 Security Profile ID2 w/o OIDC
+          - plan: fapi2-security-profile-id2-client-test-plan
+            client_auth_type: private_key_jwt
+            sender_constrain: dpop
+            fapi_client_type: plain_oauth
+          - plan: fapi2-security-profile-id2-client-test-plan
+            client_auth_type: mtls
+            sender_constrain: dpop
+            fapi_client_type: plain_oauth
+          - plan: fapi2-security-profile-id2-client-test-plan
+            client_auth_type: mtls
+            sender_constrain: mtls
+            fapi_client_type: plain_oauth
+          - plan: fapi2-security-profile-id2-client-test-plan
+            client_auth_type: private_key_jwt
+            sender_constrain: mtls
+            fapi_client_type: plain_oauth
+
+          # FAPI 2.0 Message Signing ID1 w/ OIDC
+          - plan: fapi2-message-signing-id1-client-test-plan
+            client_auth_type: private_key_jwt
+            sender_constrain: dpop
+          - plan: fapi2-message-signing-id1-client-test-plan
+            client_auth_type: mtls
+            sender_constrain: dpop
+          - plan: fapi2-message-signing-id1-client-test-plan
+            client_auth_type: mtls
+            sender_constrain: mtls
+          - plan: fapi2-message-signing-id1-client-test-plan
+            client_auth_type: private_key_jwt
+            sender_constrain: mtls
+
+          # FAPI 2.0 Message Signing ID1 w/o OIDC
+          - plan: fapi2-message-signing-id1-client-test-plan
+            client_auth_type: private_key_jwt
+            sender_constrain: dpop
+            fapi_client_type: plain_oauth
+          - plan: fapi2-message-signing-id1-client-test-plan
+            client_auth_type: mtls
+            sender_constrain: dpop
+            fapi_client_type: plain_oauth
+          - plan: fapi2-message-signing-id1-client-test-plan
+            client_auth_type: mtls
+            sender_constrain: mtls
+            fapi_client_type: plain_oauth
+          - plan: fapi2-message-signing-id1-client-test-plan
+            client_auth_type: private_key_jwt
+            sender_constrain: mtls
             fapi_client_type: plain_oauth
 
     steps:
@@ -112,7 +175,7 @@ jobs:
         run: |
           docker-compose -f docker-compose-dev.yml up -d
           while ! curl -skfail https://localhost.emobix.co.uk:8443/api/runner/available >/dev/null; do sleep 2; done
-      - run: git clone --depth 1 --single-branch --branch main https://github.com/panva/openid-client-certification-suite.git runner
+      - run: git clone --depth 1 --single-branch --branch fapi2 https://github.com/panva/openid-client-certification-suite.git runner
       - uses: actions/setup-node@v4
         with:
           node-version: lts/iron # 20

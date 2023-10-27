@@ -30,6 +30,7 @@ If you or your business use openid-client, please consider becoming a [sponsor][
   - [new Issuer(metadata)](#new-issuermetadata)
   - [issuer.Client](#issuerclient)
   - [issuer.FAPI1Client](#issuerfapi1client)
+  - [issuer.FAPI2Client](#issuerfapi2client)
   - [issuer.metadata](#issuermetadata)
 - [Issuer.discover(issuer)](#issuerdiscoverissuer)
 <!-- TOC Issuer END -->
@@ -94,6 +95,23 @@ adds necessary [Financial-grade API Security Profile 1.0 - Part 2: Advanced][] b
 - Returns: `<FAPI1Client>`
 
 The behaviours are:
+- additional client constuctor metadata validations and changed defaults
+- `s_hash` presence and value checks in authorization endpoint response ID Tokens
+- authorization endpoint response ID Tokens `iat` must not be too far in the past (fixed to be
+  1 hour)
+- Request Objects include `nbf` (with the same value as `iat`)
+
+---
+
+#### `issuer.FAPI2Client`
+
+Returns the `<FAPI2Client>` class tied to this issuer. `<FAPI2Client>` inherits from `<Client>` and
+adds necessary [FAPI 2.0 Security Profile - Implementer's Draft 02][] behaviours:
+
+- Returns: `<FAPI2Client>`
+
+The behaviours are:
+- additional client constuctor metadata validations and changed defaults
 - `s_hash` presence and value checks in authorization endpoint response ID Tokens
 - authorization endpoint response ID Tokens `iat` must not be too far in the past (fixed to be
   1 hour)
@@ -967,7 +985,7 @@ request instance.
 [jose]: https://github.com/panva/jose
 [got-library]: https://github.com/sindresorhus/got/tree/v11.8.0
 [client-authentication]: https://openid.net/specs/openid-connect-core-1_0.html#ClientAuthentication
-[Financial-grade API Security Profile 1.0 - Part 2: Advanced]: https://openid.net/specs/openid-financial-api-part-2-1_0.html
+[FAPI 2.0 Security Profile - Implementer's Draft 02]: https://openid.net/specs/fapi-2_0-security-profile-ID2.html
 
 [^dpop-exception]: Ed25519, Ed448, and all Elliptic Curve keys have a fixed algorithm. RSA and RSA-PSS keys
 look for an algorithm supported by the issuer metadata, if none is found PS256 is used as fallback.
