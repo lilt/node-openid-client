@@ -30,8 +30,11 @@
   "license": "MIT",
   "author": "Filip Skokan <panva.ip@gmail.com>",
   "exports": {
-    "types": "./types/index.d.ts",
-    "node": "./lib/index.js"
+    ".": {
+      "types": "./types/index.d.ts",
+      "node": "./lib/index.js"
+    },
+    "./package.json": "./package.json"
   },
   "files": [
     "lib",

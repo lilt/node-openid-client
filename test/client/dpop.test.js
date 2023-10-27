@@ -10,6 +10,8 @@ const {
   errors: { OPError },
 } = require('../../lib');
 
+const dpopProof = require('../../lib/helpers/dpop');
+
 const issuer = new Issuer({
   issuer: 'https://op.example.com',
   userinfo_endpoint: 'https://op.example.com/me',
@@ -42,13 +44,14 @@ describe('DPoP', () => {
 
   describe('dpopProof', () => {
     it('must be passed a payload object', function () {
-      return this.client.dpopProof('foo').then(fail, (err) => {
+      return dpopProof.call(this.client, 'foo').then(fail, (err) => {
         expect(err.message).to.eql('payload must be a plain object');
       });
     });
 
     it('DPoP Proof JWT w/o ath', async function () {
-      const proof = await this.client.dpopProof(
+      const proof = await dpopProof.call(
+        this.client,
         {
           htu: 'foo',
           htm: 'bar',
@@ -70,7 +73,8 @@ describe('DPoP', () => {
 
       expect(
         jose.decodeProtectedHeader(
-          await this.client.dpopProof(
+          await dpopProof.call(
+            this.client,
             {},
             (
               await jose.generateKeyPair('ES256', { extractable: true })
@@ -84,7 +88,8 @@ describe('DPoP', () => {
 
       expect(
         jose.decodeProtectedHeader(
-          await this.client.dpopProof(
+          await dpopProof.call(
+            this.client,
             {},
             (
               await jose.generateKeyPair('EdDSA', { extractable: true })
@@ -98,7 +103,8 @@ describe('DPoP', () => {
 
     it('DPoP Proof JWT w/ ath', async function () {
       const { privateKey } = await jose.generateKeyPair('ES256', { extractable: true });
-      const proof = await this.client.dpopProof(
+      const proof = await dpopProof.call(
+        this.client,
         {
           htu: 'foo',
           htm: 'bar',
@@ -112,7 +118,8 @@ describe('DPoP', () => {
 
     if (jose.cryptoRuntime === 'node:crypto') {
       it('else this.issuer.dpop_signing_alg_values_supported is used', async function () {
-        const proof = await this.client.dpopProof(
+        const proof = await dpopProof.call(
+          this.client,
           {},
           (
             await jose.generateKeyPair('RS256', { extractable: true })
@@ -125,7 +132,8 @@ describe('DPoP', () => {
 
     it('unless the key dictates an algorithm', async function () {
       {
-        const proof = await this.client.dpopProof(
+        const proof = await dpopProof.call(
+          this.client,
           {},
           (
             await jose.generateKeyPair('EdDSA', { extractable: true })
@@ -135,7 +143,8 @@ describe('DPoP', () => {
       }
 
       if (!('electron' in process.versions) && jose.cryptoRuntime === 'node:crypto') {
-        const proof = await this.client.dpopProof(
+        const proof = await dpopProof.call(
+          this.client,
           {},
           (
             await jose.generateKeyPair('EdDSA', { crv: 'Ed448' })
@@ -145,7 +154,8 @@ describe('DPoP', () => {
       }
 
       {
-        const proof = await this.client.dpopProof(
+        const proof = await dpopProof.call(
+          this.client,
           {},
           (
             await jose.generateKeyPair('ES256', { extractable: true })
@@ -155,7 +165,8 @@ describe('DPoP', () => {
       }
 
       if (!('electron' in process.versions) && jose.cryptoRuntime === 'node:crypto') {
-        const proof = await this.client.dpopProof(
+        const proof = await dpopProof.call(
+          this.client,
           {},
           (
             await jose.generateKeyPair('ES256K', { extractable: true })
@@ -165,7 +176,8 @@ describe('DPoP', () => {
       }
 
       {
-        const proof = await this.client.dpopProof(
+        const proof = await dpopProof.call(
+          this.client,
           {},
           (
             await jose.generateKeyPair('ES384', { extractable: true })
@@ -175,7 +187,8 @@ describe('DPoP', () => {
       }
 
       {
-        const proof = await this.client.dpopProof(
+        const proof = await dpopProof.call(
+          this.client,
           {},
           (
             await jose.generateKeyPair('ES512', { extractable: true })

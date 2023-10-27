@@ -554,7 +554,7 @@ describe('Client', () => {
             alg: 'dir',
             enc: 'A128GCM',
           })
-          .encrypt(await client.secretForAlg('A128GCM'));
+          .encrypt(await clientInternal.secretForAlg.call(client, 'A128GCM'));
 
         nock('https://op.example.com')
           .matchHeader('Accept', 'application/json')
@@ -926,7 +926,7 @@ describe('Client', () => {
             alg: 'dir',
             enc: 'A128GCM',
           })
-          .encrypt(await client.secretForAlg('A128GCM'));
+          .encrypt(await clientInternal.secretForAlg.call(client, 'A128GCM'));
 
         nock('https://op.example.com')
           .matchHeader('Accept', 'application/json')
@@ -1384,7 +1384,9 @@ describe('Client', () => {
     const issuer = new Issuer();
     const client = new issuer.Client({ client_id: 'identifier', client_secret: 'rj_JR' });
 
-    expect(new TextDecoder().decode(client.secretForAlg('HS256'))).to.eql(client.client_secret);
+    expect(new TextDecoder().decode(clientInternal.secretForAlg.call(client, 'HS256'))).to.eql(
+      client.client_secret,
+    );
   });
 
   it('#encryptionSecret', async function () {
@@ -1392,12 +1394,12 @@ describe('Client', () => {
     const client = new issuer.Client({ client_id: 'identifier', client_secret: 'rj_JR' });
 
     for (const len of [120, 128, 184, 192, 248, 256]) {
-      const key = client.encryptionSecret(String(len));
+      const key = clientInternal.encryptionSecret.call(client, String(len));
 
       expect(key).to.have.lengthOf(len >> 3);
     }
 
-    expect(() => client.encryptionSecret('1024')).to.throw(
+    expect(() => clientInternal.encryptionSecret.call(client, '1024')).to.throw(
       'unsupported symmetric encryption key derivation',
     );
   });
@@ -2566,7 +2568,7 @@ describe('Client', () => {
         id_token_signed_response_alg: 'HS256',
       });
 
-      return this.IdToken(client.secretForAlg('HS256'), 'HS256', {
+      return this.IdToken(clientInternal.secretForAlg.call(client, 'HS256'), 'HS256', {
         iss: this.issuer.issuer,
         sub: 'userId',
         aud: client.client_id,
@@ -2581,7 +2583,7 @@ describe('Client', () => {
     });
 
     it('validates the id_token_signed_response_alg is the one used', function () {
-      return this.IdToken(this.client.secretForAlg('HS256'), 'HS256', {
+      return this.IdToken(clientInternal.secretForAlg.call(this.client, 'HS256'), 'HS256', {
         iss: this.issuer.issuer,
         sub: 'userId',
         aud: this.client.client_id,
@@ -3371,7 +3373,7 @@ describe('Client', () => {
         id_token_encrypted_response_alg: 'RSA-OAEP',
       });
 
-      return client.decryptIdToken(new TokenSet()).then(fail, (err) => {
+      return clientInternal.decryptIdToken.call(client, new TokenSet()).then(fail, (err) => {
         expect(err).to.be.instanceof(TypeError);
         expect(err.message).to.eql('id_token not present in TokenSet');
       });
@@ -3391,7 +3393,7 @@ describe('Client', () => {
         }),
       );
 
-      return client.decryptIdToken(`${header}....`).then(fail, (err) => {
+      return clientInternal.decryptIdToken.call(client, `${header}....`).then(fail, (err) => {
         expect(err).to.have.property(
           'message',
           'unexpected JWE alg received, expected RSA-OAEP, got: RSA1_5',
@@ -3414,7 +3416,7 @@ describe('Client', () => {
         }),
       );
 
-      return client.decryptIdToken(`${header}....`).then(fail, (err) => {
+      return clientInternal.decryptIdToken.call(client, `${header}....`).then(fail, (err) => {
         expect(err).to.have.property(
           'message',
           'unexpected JWE enc received, expected A128CBC-HS256, got: A128GCM',
@@ -3436,7 +3438,7 @@ describe('Client', () => {
         }),
       );
 
-      return client.decryptIdToken(`${header}....`).then(fail, (err) => {
+      return clientInternal.decryptIdToken.call(client, `${header}....`).then(fail, (err) => {
         expect(err).to.have.property(
           'message',
           'unexpected JWE enc received, expected A128CBC-HS256, got: A128GCM',
