@@ -1772,7 +1772,8 @@ describe('Client', () => {
         .reply(200, '{"notavalid"}');
 
       return client.userinfo('foo').then(fail, function (error) {
-        expect(error.message).to.match(/in JSON at position 12/);
+        expect(error.message).to.eql('failed to parse userinfo JSON');
+        expect(error.cause.message).to.match(/in JSON at position 12/);
         expect(error).to.have.property('response');
       });
     });
@@ -1981,7 +1982,8 @@ describe('Client', () => {
       });
 
       return client.introspect('tokenValue').then(fail, function (error) {
-        expect(error.message).to.match(/in JSON at position 12/);
+        expect(error.message).to.eql('failed to parse response JSON');
+        expect(error.cause.message).to.match(/in JSON at position 12/);
         expect(error).to.have.property('response');
       });
     });
@@ -3266,8 +3268,9 @@ describe('Client', () => {
           return this.client.callback(null, { id_token: token, state }, { state });
         })
         .then(fail, (error) => {
-          expect(error)
-            .to.have.property('message')
+          expect(error).to.have.property('message', 'failed to validate JWT s_hash');
+          expect(error.cause)
+            .to.have.nested.property('message')
             .that.matches(/^s_hash mismatch, expected \S+, got: \S+$/);
         });
     });
@@ -3305,8 +3308,9 @@ describe('Client', () => {
           return this.client.validateIdToken(tokenset);
         })
         .then(fail, (error) => {
-          expect(error)
-            .to.have.property('message')
+          expect(error).to.have.property('message', 'failed to validate JWT at_hash');
+          expect(error.cause)
+            .to.have.nested.property('message')
             .that.matches(/^at_hash mismatch, expected \S+, got: \S+$/);
         });
     });
@@ -3345,8 +3349,9 @@ describe('Client', () => {
           return this.client.validateIdToken(tokenset);
         })
         .then(fail, (error) => {
-          expect(error)
-            .to.have.property('message')
+          expect(error).to.have.property('message', 'failed to validate JWT c_hash');
+          expect(error.cause)
+            .to.have.nested.property('message')
             .that.matches(/^c_hash mismatch, expected \S+, got: \S+$/);
         });
     });

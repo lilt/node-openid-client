@@ -413,7 +413,7 @@ describe('DPoP', () => {
 
     try {
       await this.client.callback('foo', { code: 'foo' }, {}, { DPoP: privateKey });
-    } catch (err) {}
+    } catch {}
 
     expect(this.httpOpts).to.have.nested.property('headers.DPoP');
   });

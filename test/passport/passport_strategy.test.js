@@ -599,8 +599,8 @@ describe('OpenIDConnectStrategy', () => {
           );
           expect(err).to.have.property('tokenset');
           next();
-        } catch (e) {
-          next(e);
+        } catch (err) {
+          next(err);
         }
       };
 
