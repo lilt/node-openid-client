@@ -74,7 +74,7 @@ describe('Azure AD multi-tenant applications', () => {
         .then(fail)
         .catch((err) => {
           expect(err.message).to.eql(
-            'unexpected iss value, expected https://login.microsoftonline.com/{tenantid}/v2.0, got: https://login.microsoftonline.com/foo/v2.0',
+            'iss mismatch, expected https://login.microsoftonline.com/{tenantid}/v2.0, got: https://login.microsoftonline.com/foo/v2.0',
           );
         });
     });

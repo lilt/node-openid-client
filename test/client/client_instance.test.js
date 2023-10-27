@@ -436,7 +436,10 @@ describe('Client', () => {
           })
           .then(fail, (error) => {
             expect(error).to.be.instanceof(Error);
-            expect(error).to.have.property('message', 'checks.state argument is missing');
+            expect(error).to.have.property(
+              'message',
+              'unexpected state received or checks.state argument is missing',
+            );
           });
       });
 
@@ -1177,7 +1180,10 @@ describe('Client', () => {
           })
           .then(fail, (error) => {
             expect(error).to.be.instanceof(Error);
-            expect(error).to.have.property('message', 'checks.state argument is missing');
+            expect(error).to.have.property(
+              'message',
+              'unexpected state received or checks.state argument is missing',
+            );
           });
       });
 
