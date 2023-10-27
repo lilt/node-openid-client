@@ -64,6 +64,7 @@ export interface ClientMetadata {
   default_max_age?: number;
   require_auth_time?: boolean;
   tls_client_certificate_bound_access_tokens?: boolean;
+  dpop_bound_access_tokens?: boolean;
   request_object_signing_alg?: string;
 
   // less important
