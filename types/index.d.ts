@@ -233,6 +233,7 @@ export interface DeviceAuthorizationExtras {
 
 export interface PushedAuthorizationRequestExtras {
   clientAssertionPayload?: object;
+  DPoP?: crypto.KeyObject;
 }
 
 export type Address<ExtendedAddress extends {} = UnknownObject> = Override<

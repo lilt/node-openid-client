@@ -479,6 +479,9 @@ The client will use it's `token_endpoint_auth_method` to authenticate at the `pu
   - `clientAssertionPayload`: `<Object>` extra client assertion payload parameters to be sent as
     part of a client JWT assertion. This is only used when the client's `token_endpoint_auth_method`
     is either `client_secret_jwt` or `private_key_jwt`.
+  - `DPoP`: `<KeyObject>` or `<CryptoKey>` When provided the client will send a DPoP Proof JWT to the 
+    Token Endpoint. The DPoP Proof JWT's algorithm is determined[^dpop-exception] automatically based
+    on the type of key and the issuer metadata.
 - Returns: `Promise<Object>` Parsed Pushed Authorization Request Response with `request_uri` 
   and `expires_in` properties validated to be present and correct types.
 
