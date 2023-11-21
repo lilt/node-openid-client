@@ -58,6 +58,7 @@
     "@commitlint/config-conventional": "^9.1.1",
     "@types/passport": "^1.0.4",
     "chai": "^4.2.0",
+    "debug": "^3.1.0",
     "eslint": "^7.4.0",
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-plugin-import": "^2.21.2",
